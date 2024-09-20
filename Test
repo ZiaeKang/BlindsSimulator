@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MY HOME BLINDS - Mood Selection</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+        button {
+            margin: 10px;
+            padding: 15px 30px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        img {
+            width: 1080px;
+            height: auto;
+            max-width: 100%;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            position: relative;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .close {
+            color: #aaa;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+        }
+        .share-button {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .share-fb {
+            background-color: #3b5998;
+            color: white;
+        }
+        .share-twitter {
+            background-color: #1da1f2;
+            color: white;
+        }
+        .share-instagram {
+            background-color: #e1306c;
+            color: white;
+        }
+        .share-generic {
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 인삿말과 시작 버튼 -->
+    <img src="https://cdn.shopify.com/s/files/1/0679/9287/9362/files/Secondary-D_4x_490fee31-792a-4cb4-ac2b-89f493caa78e.png?v=1726861696" alt="MY HOME BLINDS">
+    <h1>Welcome MY HOME BLINDS, the #1 Blinds Company in GTA</h1>
+    <p>Are you looking for the blinds or curtains proving your room mood?</p>
+    <button onclick="startSelection()">내 취향의 블라인드 찾기</button>
+
+    <!-- 1단계 선택: 무드 -->
+    <div id="step1" style="display:none;">
+        <p>무드를 선택하세요:</p>
+        <button onclick="chooseMood('엘레강스')">엘레강스</button>
+        <button onclick="chooseMood('큐트')">큐트</button>
+        <button onclick="chooseMood('모던')">모던</button>
+    </div>
+
+    <!-- 2단계 선택: 컬러 -->
+    <div id="step2" style="display:none;">
+        <p>컬러를 선택하세요:</p>
+        <button onclick="chooseColor('화이트')">화이트</button>
+        <button onclick="chooseColor('베이지')">베이지</button>
+        <button onclick="chooseColor('블랙')">블랙</button>
+    </div>
+
+    <!-- 3단계 선택: 위치 -->
+    <div id="step3" style="display:none;">
+        <p>위치를 선택하세요:</p>
+        <button onclick="chooseLocation('리빙룸')">리빙룸</button>
+        <button onclick="chooseLocation('베드룸')">베드룸</button>
+    </div>
+
+    <!-- 결과 영역 -->
+    <div id="result" style="display:none;">
+        <h3>결과</h3>
+        <img id="resultImage" src="" alt="결과 이미지" style="display:none;">
+        <p id="selectedConditions"></p>
+        <div id="buttons" style="display:none;">
+            <button onclick="openShareModal()">공유</button>
+            <button onclick="getQuote()">Get a Free Quote</button>
+            <button onclick="restart()">다시하기</button>
+            <button onclick="viewAllProducts()">전체 상품 둘러보기</button>
+        </div>
+    </div>
+
+    <!-- 공유 모달 -->
+    <div id="shareModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeShareModal()">&times;</span>
+            <h2>이미지 공유</h2>
+            <button class="share-button share-fb" onclick="shareFacebook()">Facebook으로 공유</button>
+            <button class="share-button share-twitter" onclick="shareTwitter()">Twitter로 공유</button>
+            <button class="share-button share-instagram" onclick="shareInstagram()">Instagram으로 공유</button>
+            <button class="share-button share-generic" onclick="shareGeneric()">일반 공유</button>
+        </div>
+    </div>
+
+    <script>
+        function startSelection() {
+            document.querySelector('h1').style.display = 'none';
+            document.querySelector('p').style.display = 'none';
+            document.querySelector('button').style.display = 'none';
+            document.getElementById('step1').style.display = 'block';
+        }
+
+        let selectedMood = '';
+        let selectedColor = '';
+        let selectedLocation = '';
+
+        const images = [
+            {
+                mood: '엘레강스',
+                color: '화이트',
+                location: '리빙룸',
+                url: 'https://cdn.shopify.com/s/files/1/0679/9287/9362/files/Knix_Plain_Living_01_4K.jpg?v=1724866502'
+            },
+            // 나머지 이미지 정의
+        ];
+
+        function chooseMood(mood) {
+            selectedMood = mood;
+            document.getElementById('step1').style.display = 'none';
+            document.getElementById('step2').style.display = 'block';
+        }
+
+        function chooseColor(color) {
+            selectedColor = color;
+            document.getElementById('step2').style.display = 'none';
+            document.getElementById('step3').style.display = 'block';
+        }
+
+        function chooseLocation(location) {
+            selectedLocation = location;
+            document.getElementById('step3').style.display = 'none';
+            displayResult();
+        }
+
+        function getQuote() {
+            window.location.href = "https://wkf.ms/3v9VJTa";
+        }
+
+        function displayResult() {
+            const result = images.find(image => 
+                image.mood === selectedMood && 
+                image.color === selectedColor && 
+                image.location === selectedLocation
+            );
+
+            const resultImage = document.getElementById('resultImage');
+            const selectedConditions = document.getElementById('selectedConditions');
+            const buttons = document.getElementById('buttons');
+            document.getElementById('result').style.display = 'block';
+
+            if (result) {
+                resultImage.src = result.url;
+                resultImage.style.display = 'block';
+                selectedConditions.style.display = 'none';
+                buttons.style.display = 'block';
+            } else {
+                resultImage.style.display = 'none';
+                selectedConditions.textContent = `선택된 조건: 무드(${selectedMood}), 컬러(${selectedColor}), 위치(${selectedLocation})에 해당하는 이미지가 없습니다.`;
+                selectedConditions.style.display = 'block';
+                buttons.style.display = 'block';
+            }
+        }
+
+        function openShareModal() {
+            document.getElementById('shareModal').style.display = 'block';
+        }
+
+        function closeShareModal() {
+            document.getElementById('shareModal').style.display = 'none';
+        }
+
+        function restart() {
+            location.reload();  // 페이지를 새로 고침하여 처음으로 돌아갑니다.
+        }
+
+        function viewAllProducts() {
+            window.location.href = "https://myhomeblinds.ca/pages/what-we-carry";
+        }
+    </script>
+
+</body>
+</html>
